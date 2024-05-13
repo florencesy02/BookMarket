@@ -1,38 +1,33 @@
-package BookMarket.model;
+package bookmarket.model;
+
+import java.util.ArrayList;
 
 public class Cart {
-	CartItem[] itemList = new CartItem[64];
-	int numItems;
-	
+	//private CartItem[] itemList = new CartItem[64];
+	private ArrayList<CartItem> itemList = new ArrayList<>();
+	//private int numItems = 0;
+
 	public boolean isEmpty() {
-		return numItems == 0;
+		return itemList.isEmpty();
 	}
 
-	public CartItem[] getItemList() {
+	public ArrayList<CartItem> getItemList() {
 		return itemList;
 	}
 
-	public void setItemList(CartItem[] itemList) {
-		this.itemList = itemList;
-	}
-
 	public int getNumItems() {
-		return numItems;
+		return itemList.size();
 	}
 
-	public void setNumItems(int numItems) {
-		this.numItems = numItems;
-	}
-	
 	public String getItemInfo(int index) {
-		return itemList[index].toString();
+		return itemList.get(index).toString();
 	}
-	
+
 	public void addItem(Book book) {
 		
-		CartItem = getCartItem(book);
+		CartItem item = getCartItem(book);
 		if (item == null) {
-			itemList[numItems++] = new CartItem(book);
+			itemList.add(new CartItem(book));
 		}
 		else {
 			item.addQuantity(1);
@@ -40,16 +35,49 @@ public class Cart {
 	}
 	
 	private CartItem getCartItem(Book book) {
-		for (int i = 0; i < numItems; i++) {
-			if (itemList[i].getBook() == book) {
-				return item;
+		
+		for (CartItem item : itemList) {
+			if (item.getBook() == book) return item;
+		}
+		
+		return null;
+	}
+	
+	private CartItem getCartItem(int bookId) {
+		for (CartItem item : itemList) {
+			if (item.bookId == bookId) return item;
 		}
 		return null;
 	}
 	
+
 	public void resetCart() {
-		numItems = 0;
-		this.itemList = new CartItem[64];
+		itemList.clear();
 	}
 
+	public boolean isValidItem(int bookId) {
+		for (CartItem item : itemList) {
+			if (item.bookId == bookId) return true;
+		}
+		return false;
+	}
+
+	public void deleteItem(int bookId) {
+		CartItem item = getCartItem(bookId);
+		itemList.remove(item);
+	}
+
+	public void updateQuantity(int bookId, int quantity) {
+		
+		if (quantity == 0)
+			deleteItem(bookId);
+		else {
+			CartItem item = getCartItem(bookId);
+			item.setQuantity(quantity);
+		}
+		
+	}
+
+	
+	
 }
